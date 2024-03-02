@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener  {
 
@@ -133,20 +134,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void player1Wins () {
         player1Points++;
-        Toast.makeText(this, "Player 1 Wins!", Toast.LENGTH_SHORT).show();
+        showWinDialog("Player 1");
         updatePointsText();
         resetBoard();
     }
     private void player2Wins () {
         player2Points++;
-        Toast.makeText(this, "Player 2 Wins!", Toast.LENGTH_SHORT).show();
+        showWinDialog("Player 2");
         updatePointsText();
         resetBoard();
     }
     private void draw () {
-        Toast.makeText(this, "Draw", Toast.LENGTH_SHORT).show();
-        resetBoard();
+        showDrawDialog();
     }
+    private void showWinDialog(String winner) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_win, null);
+        builder.setView(dialogView);
+        TextView dialogText = dialogView.findViewById(R.id.dialog_text);
+        dialogText.setText(winner + " wins!");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                resetBoard();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showDrawDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Draw")
+                .setMessage("The game is a draw!")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        resetBoard();
+                    }
+                })
+                .create();
+        alertDialog.show();
+    }
+
 
     private void updatePointsText () {
         textviewPlayer1.setText("Player 1: " + player1Points);
